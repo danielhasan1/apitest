@@ -96,9 +96,9 @@ def create(db: Session = Depends(get_db)):
         db.execute("CREATE EXTENSION earthdistance")
         #row = db.execute("select * from pincod limit 10")
         
-        l = [{'address':i[1],'loc':i[0],'lat':i[3],'lon':i[4],'city':i[2]} for i in row]
-        print(l)
-        return l
+        #l = [{'address':i[1],'loc':i[0],'lat':i[3],'lon':i[4],'city':i[2]} for i in row]
+        #print(l)
+        #return l
         
         db.execute("CREATE TABLE pincod (loc character varying(20) NOT NULL,address character varying(50),city character varying(50),lat double precision,lon double precision,accuracy character varying(10))")
         for row in reader: # Iterate through csv
