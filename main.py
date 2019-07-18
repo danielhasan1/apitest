@@ -85,8 +85,9 @@ def create(db: Session = Depends(get_db)):
         columns = next(reader) 
         value = 2000000000
         idd = 1
-        #db.execute("CREATE EXTENSION cube")
-        #db.execute("CREATE EXTENSION earthdistance")
+        db.execute("CREATE EXTENSION cube")
+        db.execute("CREATE EXTENSION earthdistance")
+        '''
         #db.execute("CREATE TABLE pincod (loc character varying(20) NOT NULL,address character varying(50),city character varying(50),lat double precision,lon double precision,accuracy character varying(10))")
         for row in reader: # Iterate through csv
             db.execute("INSERT INTO pincod VALUES ({},'{}', '{}', '{}', '{}', '{}','{}')" .format(idd,row[0], row[1], row[2], row[3] if row[3] else value, row[4] if row[4] else value,row[5] if row[5] else value))
@@ -96,7 +97,7 @@ def create(db: Session = Depends(get_db)):
         ff = json.load(f)
         for i in ff['features']:
             db.execute("INSERT INTO poly VALUES ('{}', '{}', '{}')" .format(i['properties']['name'], i['properties']['parent'], i['geometry']['coordinates']))
-
+        '''
 @app.get('/get_using_postgres/{lat}/{lon}/{rad}')
 def get_near2(lat:float,lon:float,rad:float,db: Session = Depends(get_db)):
     rad = rad * 1000
