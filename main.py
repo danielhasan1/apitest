@@ -5,16 +5,16 @@ from sqlalchemy.orm import Session
 from starlette.requests import Request
 from starlette.responses import Response
 import sqlalchemy as sqla
-import crud, models, schemas
+from . import crud, models, schemas
 import re
 import math as m
-from database import SessionLocal, engine
+from .database import SessionLocal, engine
 from math import sin, cos, sqrt, atan2, radians
 import csv
 import json
 import os
 #models.Base.metadata.create_all(bind=engine)
-
+from starlette.testclient import TestClient
 app = FastAPI()
 
 #print('__file__={0:<35} | __name__={1:<20} | __package__={2:<20}'.format(__file__,__name__,str(__package__)))
@@ -23,6 +23,13 @@ app = FastAPI()
 @app.get("/")
 async def root():
 	return {"message": "Go to '/docs'"}
+
+client = TestClient(root)
+
+def t():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {"msg": "Go to '/docs'"}
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
@@ -87,22 +94,22 @@ def create(db: Session = Depends(get_db)):
         idd = 1
         db.execute("CREATE EXTENSION cube")
         db.execute("CREATE EXTENSION earthdistance")
-        row = db.execute("select * from pincod limit 10")
+        #row = db.execute("select * from pincod limit 10")
         
         l = [{'address':i[1],'loc':i[0],'lat':i[3],'lon':i[4],'city':i[2]} for i in row]
         print(l)
         return l
-        '''
-        #db.execute("CREATE TABLE pincod (loc character varying(20) NOT NULL,address character varying(50),city character varying(50),lat double precision,lon double precision,accuracy character varying(10))")
+        
+        db.execute("CREATE TABLE pincod (loc character varying(20) NOT NULL,address character varying(50),city character varying(50),lat double precision,lon double precision,accuracy character varying(10))")
         for row in reader: # Iterate through csv
             db.execute("INSERT INTO pincod VALUES ({},'{}', '{}', '{}', '{}', '{}','{}')" .format(idd,row[0], row[1], row[2], row[3] if row[3] else value, row[4] if row[4] else value,row[5] if row[5] else value))
             idd += 1
-    #db.execute("CREATE TABLE poly(name character varying(50), parent character varying(50), cord text)")
+    db.execute("CREATE TABLE poly(name character varying(50), parent character varying(50), cord text)")
     with open (os.getcwd()+'/'+'map.json','r') as f:
         ff = json.load(f)
         for i in ff['features']:
             db.execute("INSERT INTO poly VALUES ('{}', '{}', '{}')" .format(i['properties']['name'], i['properties']['parent'], i['geometry']['coordinates']))
-        '''
+
 @app.get('/get_using_postgres/{lat}/{lon}/{rad}')
 def get_near2(lat:float,lon:float,rad:float,db: Session = Depends(get_db)):
     rad = rad * 1000
