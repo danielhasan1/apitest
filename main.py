@@ -5,10 +5,10 @@ from sqlalchemy.orm import Session
 from starlette.requests import Request
 from starlette.responses import Response
 import sqlalchemy as sqla
-from . import crud, models, schemas
+import crud, models, schemas
 import re
 import math as m
-from .database import SessionLocal, engine
+from database import SessionLocal, engine
 from math import sin, cos, sqrt, atan2, radians
 import csv
 import json
