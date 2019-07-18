@@ -57,7 +57,7 @@ def post_location(loc:schemas.Loc, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="coordinates already exist")
     row = db.execute("SELECT * FROM pincode WHERE earth_box(ll_to_earth({},{}),2500/1.609) @> ll_to_earth(lat,lon)" .format(loc.lat,loc.lon))
     for i in row:
-        st = "coordinates are not accurate too close to existing " + i[0] + ' ' + i[1] + ' ' + str(i[3]) + ' ' + str(i[4])
+        st = "coordinates are not accurate too close to existing " + str(i[0]) + ' ' + str(i[1]) + ' ' + str(i[3]) + ' ' + str(i[4])
         raise HTTPException(status_code=400,detail=st)
     return (crud.create_record(db=db,location=loc))
     return {'df':32}
