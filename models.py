@@ -5,7 +5,7 @@ from database import Base
 
 
 class pin(Base):
-    __tablename__ = "pincod"
+    __tablename__ = "pincode"
     id = Column(Integer, primary_key=True)
     loc = Column(String)
     address = Column(String)
