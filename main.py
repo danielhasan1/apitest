@@ -108,7 +108,7 @@ def get_near2(lat:float,lon:float,rad:float,db: Session = Depends(get_db)):
     user = session.query().from_statement(
     text("SELECT * FROM pincode")).all()
     '''
-    row = db.execute("SELECT * FROM pincode WHERE earth_box(ll_to_earth({},{}),{}) @> ll_to_earth(lat,lon)" .format(lat,lon,rad))
+    row = db.execute("SELECT * FROM pincod WHERE earth_box(ll_to_earth({},{}),{}) @> ll_to_earth(lat,lon)" .format(lat,lon,rad))
     for i in row:
         l = [{'address':i[1],'loc':i[0],'lat':i[3],'lon':i[4],'city':i[2]} for i in row]
         #print(l)
