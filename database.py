@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 #SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:danish@127.0.0.1:5432/apitest"
+SQLALCHEMY_DATABASE_URL = "$(heroku config:get DATABASE_URL -a your-app)"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL

@@ -10,7 +10,7 @@ import re
 import math as m
 from database import SessionLocal, engine
 from math import sin, cos, sqrt, atan2, radians
-#models.Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
