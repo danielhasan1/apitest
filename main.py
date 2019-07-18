@@ -59,7 +59,7 @@ def post_location(loc:schemas.Loc, db: Session = Depends(get_db)):
     for i in row:
         st = "coordinates are not accurate too close to existing " + i[0] + ' ' + i[1] + ' ' + str(i[3]) + ' ' + str(i[4])
         raise HTTPException(status_code=400,detail=st)
-    #return (crud.create_record(db=db,location=loc))
+    return (crud.create_record(db=db,location=loc))
     return {'df':32}
 
 
