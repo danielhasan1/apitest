@@ -91,6 +91,28 @@ def create(db: Session = Depends(get_db)):
         reader = csv.reader(f)
         columns = next(reader) 
         value = 2000000000
+        #cursor = connection.cursor()
+        cursor = engine.connect()
+        #cursor = connection.cursor()
+        cursor.execute("CREATE EXTENSION cube")
+        cursor.execute("CREATE EXTENSION earthdistance")
+        cursor.execute("CREATE TABLE pincode (id serial primary key, loc character varying(20) NOT NULL,address character varying(50),city character varying(50),lat double precision,lon double precision,accuracy character varying(10))")
+
+        for row in reader: # Iterate through csv
+            cursor.execute("INSERT INTO pincode(loc,address,city,lat,lon,accuracy) VALUES ('{}', '{}', '{}', '{}', '{}','{}')" .format(row[0], row[1], row[2], row[3] if row[3] else value, row[4] if row[4] else value,row[5] if row[5] else value))
+        f.close()
+    cursor.execute("CREATE TABLE poly(name character varying(50) primary key, parent character varying(50), cord text)")
+    with open (os.getcwd()+'/'+'map.json','r') as f:
+        ff = json.load(f)
+        for i in ff['features']:
+            #print(i['properties']['name'])
+            cursor.execute("INSERT INTO poly VALUES ('{}', '{}', '{}')" .format(i['properties']['name'], i['properties']['parent'], i['geometry']['coordinates']))
+
+    '''
+    with open (os.getcwd()+'/'+'IN.csv','r') as f:
+        reader = csv.reader(f)
+        columns = next(reader) 
+        value = 2000000000
         idd = 1
         db.execute("CREATE EXTENSION cube")
         db.execute("CREATE EXTENSION earthdistance")
@@ -109,7 +131,7 @@ def create(db: Session = Depends(get_db)):
         ff = json.load(f)
         for i in ff['features']:
             db.execute("INSERT INTO poly VALUES ('{}', '{}', '{}')" .format(i['properties']['name'], i['properties']['parent'], i['geometry']['coordinates']))
-
+'''
 @app.get('/get_using_postgres/{lat}/{lon}/{rad}')
 def get_near2(lat:float,lon:float,rad:float,db: Session = Depends(get_db)):
     rad = rad * 1000
