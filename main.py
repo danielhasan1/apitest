@@ -84,12 +84,12 @@ def create(db: Session = Depends(get_db)):
         reader = csv.reader(f)
         columns = next(reader) 
         value = 2000000000
-        db.execute("CREATE EXTENSION cube")
-        db.execute("CREATE EXTENSION earthdistance")
-        db.execute("CREATE TABLE pincod (loc character varying(20) NOT NULL,address character varying(50),city character varying(50),lat double precision,lon double precision,accuracy character varying(10))")
+        #db.execute("CREATE EXTENSION cube")
+        #db.execute("CREATE EXTENSION earthdistance")
+        #db.execute("CREATE TABLE pincod (loc character varying(20) NOT NULL,address character varying(50),city character varying(50),lat double precision,lon double precision,accuracy character varying(10))")
         for row in reader: # Iterate through csv
-            cursor.execute("INSERT INTO pincode VALUES ('{}', '{}', '{}', '{}', '{}','{}')" .format(row[0], row[1], row[2], row[3] if row[3] else value, row[4] if row[4] else value,row[5] if row[5] else value))
-    db.execute("CREATE TABLE poly(name character varying(50), parent character varying(50), cord text)")
+            db.execute("INSERT INTO pincode VALUES ('{}', '{}', '{}', '{}', '{}','{}')" .format(row[0], row[1], row[2], row[3] if row[3] else value, row[4] if row[4] else value,row[5] if row[5] else value))
+    #db.execute("CREATE TABLE poly(name character varying(50), parent character varying(50), cord text)")
     with open (os.getcwd()+'/'+'map.json','r') as f:
         ff = json.load(f)
         for i in ff['features']:
