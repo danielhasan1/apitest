@@ -10,7 +10,8 @@ import re
 import math as m
 from database import SessionLocal, engine
 from math import sin, cos, sqrt, atan2, radians
-models.Base.metadata.create_all(bind=engine)
+import os
+#models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -75,6 +76,22 @@ def get_near(lat:float,lon:float,rad:float,db: Session = Depends(get_db)):
             #print(distance)
             li.append(i)
     return li
+@app.get('/create')
+def create(db: Session = Depends(get_db)):
+    with open (os.getcwd()+'/'+'radii'+'/'+'IN.csv','r') as f:
+        reader = csv.reader(f)
+        columns = next(reader) 
+        value = 2000000000
+        db.execute("CREATE EXTENSION cube")
+        db.execute("CREATE EXTENSION earthdistance")
+        db.execute("CREATE TABLE pincod (loc character varying(20) NOT NULL,address character varying(50),city character varying(50),lat double precision,lon double precision,accuracy character varying(10))")
+        for row in reader: # Iterate through csv
+            cursor.execute("INSERT INTO pincode VALUES ('{}', '{}', '{}', '{}', '{}','{}')" .format(row[0], row[1], row[2], row[3] if row[3] else value, row[4] if row[4] else value,row[5] if row[5] else value))
+    db.execute("CREATE TABLE poly(name character varying(50), parent character varying(50), cord text)")
+    with open (os.getcwd()+'/'+'radii'+'/'+'map.json','r') as f:
+        ff = json.load(f)
+        for i in ff['features']:
+            db.execute("INSERT INTO poly VALUES ('{}', '{}', '{}')" .format(i['properties']['name'], i['properties']['parent'], i['geometry']['coordinates']))
 
 @app.get('/get_using_postgres/{lat}/{lon}/{rad}')
 def get_near2(lat:float,lon:float,rad:float,db: Session = Depends(get_db)):
