@@ -13,7 +13,7 @@ from math import sin, cos, sqrt, atan2, radians
 import csv
 import json
 import os
-#models.Base.metadata.create_all(bind=engine)
+#models.Base.metadata.create_all(bind=engine) alternative of this is create which create everything at runtime
 from starlette.testclient import TestClient
 app = FastAPI()
 
