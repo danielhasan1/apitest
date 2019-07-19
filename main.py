@@ -87,7 +87,11 @@ def get_near(lat:float,lon:float,rad:float,db: Session = Depends(get_db)):
     return li
 @app.get('/create')
 def create(db: Session = Depends(get_db)):
-    with open (os.getcwd()+'/'+'IN.csv','r') as f:
+    if os.name == 'nt':
+        ospath = "\\"
+    else:
+        ospath = "/"
+    with open (os.getcwd()+ospath+'IN.csv','r') as f:
         reader = csv.reader(f)
         columns = next(reader) 
         value = 2000000000
@@ -102,7 +106,7 @@ def create(db: Session = Depends(get_db)):
             cursor.execute("INSERT INTO pincode(loc,address,city,lat,lon,accuracy) VALUES ('{}', '{}', '{}', '{}', '{}','{}')" .format(row[0], row[1], row[2], row[3] if row[3] else value, row[4] if row[4] else value,row[5] if row[5] else value))
         f.close()
     cursor.execute("CREATE TABLE poly(name character varying(50) primary key, parent character varying(50), cord text)")
-    with open (os.getcwd()+'/'+'map.json','r') as f:
+    with open (os.getcwd()+ospath+'map.json','r') as f:
         ff = json.load(f)
         for i in ff['features']:
             #print(i['properties']['name'])
