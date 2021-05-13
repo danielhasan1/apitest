@@ -16,7 +16,7 @@ Jinja2==2.10.1
 MarkupSafe==1.1.1
 promise==2.2.1
 psycopg2==2.8.3
-pydantic==0.30
+pydantic==1.6.2
 python-multipart==0.0.5
 PyYAML==5.1.1
 requests==2.22.0
